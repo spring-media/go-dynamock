@@ -50,7 +50,7 @@ type (
 
 	// PutItemExpectation struct hold expectation field, err, and result
 	PutItemExpectation struct {
-		item   map[string]*dynamodb.AttributeValue
+		item   map[string]*AttributeValueExpect
 		table  *string
 		output *dynamodb.PutItemOutput
 	}

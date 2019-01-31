@@ -2,8 +2,6 @@ package dynamock
 
 import (
 	"fmt"
-	"reflect"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -16,7 +14,7 @@ func (e *PutItemExpectation) ToTable(table string) *PutItemExpectation {
 }
 
 // WithItems - method for set Items expectation
-func (e *PutItemExpectation) WithItems(item map[string]*dynamodb.AttributeValue) *PutItemExpectation {
+func (e *PutItemExpectation) WithItems(item map[string]*AttributeValueExpect) *PutItemExpectation {
 	e.item = item
 	return e
 }
@@ -39,8 +37,9 @@ func (e *MockDynamoDB) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemO
 		}
 
 		if x.item != nil {
-			if !reflect.DeepEqual(x.item, input.Item) {
-				return nil, fmt.Errorf("Expect item %+v but found item %+v", x.item, input.Item)
+			_, err := Equals(x.item, input.Item)
+			if err != nil {
+				return nil, err
 			}
 		}
 
@@ -65,8 +64,9 @@ func (e *MockDynamoDB) PutItemWithContext(ctx aws.Context, input *dynamodb.PutIt
 		}
 
 		if x.item != nil {
-			if !reflect.DeepEqual(x.item, input.Item) {
-				return nil, fmt.Errorf("Expect item %+v but found item %+v", x.item, input.Item)
+			_, err := Equals(x.item, input.Item)
+			if err != nil {
+				return nil, err
 			}
 		}
 
